@@ -1,6 +1,6 @@
 # Rdioid
 
-A simple Ruby Gem wrapper for the Rdio Web Services API with OAuth 2.0. Handles OAuth authtentication and API calls.
+A simple Ruby Gem wrapper for the Rdio Web Services API with OAuth 2.0. Handles OAuth authentication and API calls.
 
 ## Installation
 

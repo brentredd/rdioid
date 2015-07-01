@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["reddshack@gmail.com"]
 
   spec.summary       = %q{Simple Rdio Web Services API wrapper with OAuth 2.0}
-  spec.description   = %q{Handles OAuth authtentication and API calls for Rdio Web Services API.}
+  spec.description   = %q{Handles OAuth authentication and API calls for Rdio Web Services API.}
   spec.homepage      = "https://github.com/reddshack/rdioid"
   spec.license       = "MIT"
 
