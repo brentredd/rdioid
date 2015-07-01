@@ -18,6 +18,30 @@ Or install it yourself as:
 
     $ gem install rdioid
 
+## Rdioid::Client
+
+### Class methods
+```
+.authorization_url(options = {})
+```
+
+### Instance methods
+```
+#api_request(access_token, body = {})
+
+#request_device_code(options = {})
+
+#request_token_with_authorization_code(code, options = {})
+
+#request_token_with_client_credentials(options = {})
+
+#request_token_with_device_code(device_code, options = {})
+
+#request_token_with_password(username, password, options = {})
+
+#request_token_with_refresh_token(refresh_token, options = {})
+```
+
 ## Usage
 
 ### Config
