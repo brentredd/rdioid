@@ -1,8 +1,6 @@
 # Rdioid
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rdioid`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A simple Ruby Gem wrapper for the Rdio Web Services API with OAuth 2.0. Handles OAuth authtentication and API calls.
 
 ## Installation
 
@@ -22,20 +20,43 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Config
+```ruby
+Rdioid.configure do |config|
+  config.client_id = 'your_client_id'
+  config.client_secret = 'your_client_secret'
+  config.redirect_uri = 'http://your_redirect_uri/'
+end
+```
 
-## Development
+### Oauth
+```ruby
+Rdioid::Client.authorization_url
+# => "https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=your_client_id&redirect_uri=http%3A%2F%2Fyour_redirect_uri%2F"
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+rdioid_client = Rdioid::Client.new
+rdioid_client.request_token_with_authorization_code('authorization_code')
+# => { "access_token" => "...", "token_type" => "bearer", "expires_in" => 43200, "refresh_token" => "...", "scope" => "" }
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### API Request
+```ruby
+rdioid_client = Rdioid::Client.new
+
+body = {
+  :method => 'searchSuggestions',
+  :query => 'Run_Return',
+  :types => 'Artist'
+}
+
+rdio_client.api_request('access_token', body)
+# => { "status" => "ok", "result" => [{ "name" => "Run_Return", "key" => "r400361" }] }
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rdioid.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/reddshack/rdioid.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
