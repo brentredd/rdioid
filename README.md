@@ -68,7 +68,7 @@ rdioid_client.request_token_with_authorization_code('authorization_code')
 rdioid_client = Rdioid::Client.new
 
 body = {
-  :method => 'searchSuggestions',
+  :method => 'searchSuggestions', # http://www.rdio.com/developers/docs/web-service/methods/
   :query => 'Run_Return',
   :types => 'Artist'
 }
