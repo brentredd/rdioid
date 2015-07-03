@@ -60,7 +60,7 @@ Rdioid::Client.authorization_url
 
 rdioid_client = Rdioid::Client.new
 rdioid_client.request_token_with_authorization_code('authorization_code')
-# => { "access_token" => "...", "token_type" => "bearer", "expires_in" => 43200, "refresh_token" => "...", "scope" => "" }
+# => { "access_token" => "AAbbCC", "token_type" => "bearer", "expires_in" => 43200, "refresh_token" => "DDeeFF", "scope" => "" }
 ```
 
 ### API Request
@@ -73,7 +73,7 @@ body = {
   :types => 'Artist'
 }
 
-rdio_client.api_request('access_token', body)
+rdio_client.api_request('AAbbCC', body)
 # => { "status" => "ok", "result" => [{ "name" => "Run_Return", "key" => "r400361" }] }
 ```
 
