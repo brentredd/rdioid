@@ -59,7 +59,7 @@ Rdioid::Client.authorization_url
 # => "https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=your_client_id&redirect_uri=http%3A%2F%2Fyour_redirect_uri%2F"
 
 rdioid_client = Rdioid::Client.new
-rdioid_client.request_token_with_authorization_code('authorization_code')
+rdioid_client.request_token_with_authorization_code('a1b2c3')
 # => { "access_token" => "AAbbCC", "token_type" => "bearer", "expires_in" => 43200, "refresh_token" => "DDeeFF", "scope" => "" }
 ```
 
