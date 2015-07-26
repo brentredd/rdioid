@@ -53,7 +53,7 @@ Rdioid.configure do |config|
 end
 ```
 
-### Oauth
+### OAuth
 ```ruby
 Rdioid::Client.authorization_url
 # => "https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=your_client_id&redirect_uri=http%3A%2F%2Fyour_redirect_uri%2F"
