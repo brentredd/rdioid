@@ -6,21 +6,51 @@ module Rdioid
     # Provides the redirect URL for <b>Authorization Code</b> and <b>Implicit Grant</b>.
     #
     # @param options [Hash] additional query string values
-    # @option options [String] :response_type ('code') for <b>Authorize Code</b>, or use +'token'+ for <b>Implicit Grant</b>
+    # @option options [String] :response_type ('code') for <b>Authorization Code</b>, or use +'token'+ for <b>Implicit Grant</b>
     # @option options [String] :scope the desired scope you wish to have access to
     # @option options [String] :state a string you provide that will be returned back to you
     #
-    # @return [String] escaped URL for redirection
+    # @return [String] escaped URL used for redirection
     #
-    # @example
+    # @example Authorization Code
     #   Rdioid::Client.authorization_url
     #   # => https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F
     #
+    #   # Response after User has allowed access
+    #   # => http://test.com/?code=ImSLMoN02mqBkO
+    #
+    #   # Response after User has denied access
+    #   # => http://test.com/?error=access_denied
+    #
+    # @example
+    #   Rdioid::Client.authorization_url(:state => 'new_user')
+    #   # => https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F&state=new_user
+    #
+    #   # Response after User has allowed access
+    #   # => http://test.com/?state=new_user&code=ImSLMoN02mqBkO
+    #
+    #   # Response after User has denied access
+    #   # => http://test.com/?state=new_user&error=access_denied
+    #
+    # @example Implicit Grant
     #   Rdioid::Client.authorization_url(:response_type => 'token')
     #   # => https://www.rdio.com/oauth2/authorize/?response_type=token&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F
     #
-    #   Rdioid::Client.authorization_url(:state => 'new_user')
-    #   # => https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F&state=new_user
+    #   # Response after User has allowed access
+    #   # => http://test.com/#access_token=AAAAWMgAAAIB-4ACc6qc&token_type=bearer&expires_in=43199
+    #
+    #   # Response after User has denied access
+    #   # => http://test.com/#error=access_denied
+    #
+    # @example
+    #   Rdioid::Client.authorization_url(:response_type => 'token', :state => 'new_user')
+    #   # => https://www.rdio.com/oauth2/authorize/?response_type=token&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F&state=new_user
+    #
+    #   # Response after User has allowed access
+    #   # => http://test.com/#access_token=AAAAWMgAAAIB-4ACc6qc&token_type=bearer&state=new_user&expires_in=43199
+    #
+    #   # Response after User has denied access
+    #   # => http://test.com/#state=new_user&error=access_denied
     #
     def self.authorization_url(options = {})
       query = {
