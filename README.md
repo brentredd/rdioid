@@ -68,7 +68,7 @@ rdioid_client.request_device_code
 
 code = '2479RA'
 
-# poll this method at a rate of "interval_s", waiting for a response without an "error"
+# poll this method at a rate of "interval_s", waiting for a response with an "access_token"
 #
 rdioid_client.request_token_with_device_code(code)
 # => { "error_description" => "user has not approved this code yet", "error" => "pending_authorization" }

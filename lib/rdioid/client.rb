@@ -1,5 +1,5 @@
 module Rdioid
-  # Once *Rdioid* is configured with all required values, *Rdioid::Client* is
+  # Once *Rdioid* is configured with all required values, <b>Rdioid::Client</b> is
   # able to make requests to the <b>Web Service API</b>.
   class Client
     ##
