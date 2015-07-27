@@ -29,7 +29,7 @@ Rdioid.configure do |config|
 end
 ```
 
-### OAuth
+### OAuth 2.0
 Use these methods to request an `access_token`.
 
 #### Authorization Code
