@@ -110,8 +110,8 @@ rdioid_client.request_token_with_refresh_token(refresh_token)
 ```
 
 ### Web Service API Request
-Use the `access_token` and provide a `:method` to send a Web Service API request. Available methods:
-http://www.rdio.com/developers/docs/web-service/methods/
+Use the `access_token` and provide a `:method` to send a Web Service API request.
+Available methods: http://www.rdio.com/developers/docs/web-service/methods/
 
 ```ruby
 rdioid_client = Rdioid::Client.new
