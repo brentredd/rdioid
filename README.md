@@ -1,6 +1,6 @@
 # Rdioid
 
-A simple Ruby Gem wrapper for the Rdio Web Services API with OAuth 2.0. Handles OAuth authentication and API calls.
+A simple Ruby Gem wrapper for the Rdio Web Service API with OAuth 2.0. Handles OAuth requests and API requests.
 
 ## Installation
 
@@ -30,7 +30,7 @@ end
 ```
 
 ### OAuth
-Use these methods to request an `access_token`, required for sending requests to the Web Service API.
+Use these methods to request an `access_token`.
 
 #### Authorization Code
 ```ruby
@@ -99,7 +99,7 @@ rdioid_client.request_token_with_password(username, password)
 ```
 
 #### Refresh Token
-After an `access_token` has expired, use the `refresh_token` to request another `access_token`
+After an `access_token` has expired, use the received `refresh_token` to request another one.
 
 ```ruby
 rdioid_client = Rdioid::Client.new
