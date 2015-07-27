@@ -6,21 +6,51 @@ module Rdioid
     # Provides the redirect URL for <b>Authorization Code</b> and <b>Implicit Grant</b>.
     #
     # @param options [Hash] additional query string values
-    # @option options [String] :response_type ('code') for <b>Authorize Code</b>, or use +'token'+ for <b>Implicit Grant</b>
+    # @option options [String] :response_type ('code') for <b>Authorization Code</b>, or use +'token'+ for <b>Implicit Grant</b>
     # @option options [String] :scope the desired scope you wish to have access to
     # @option options [String] :state a string you provide that will be returned back to you
     #
-    # @return [String] escaped URL for redirection
+    # @return [String] escaped URL used for redirection
     #
-    # @example
+    # @example Authorization Code
     #   Rdioid::Client.authorization_url
     #   # => https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F
     #
+    #   # GET request to your +redirect_uri+ after User has allowed access
+    #   # => http://test.com/?code=ImSLMoN02mqBkO
+    #
+    #   # GET request to your +redirect_uri+ after User has denied access
+    #   # => http://test.com/?error=access_denied
+    #
+    # @example
+    #   Rdioid::Client.authorization_url(:state => 'new_user')
+    #   # => https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F&state=new_user
+    #
+    #   # GET request to your +redirect_uri+ after User has allowed access
+    #   # => http://test.com/?state=new_user&code=ImSLMoN02mqBkO
+    #
+    #   # GET request to your +redirect_uri+ after User has denied access
+    #   # => http://test.com/?state=new_user&error=access_denied
+    #
+    # @example Implicit Grant
     #   Rdioid::Client.authorization_url(:response_type => 'token')
     #   # => https://www.rdio.com/oauth2/authorize/?response_type=token&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F
     #
-    #   Rdioid::Client.authorization_url(:state => 'new_user')
-    #   # => https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F&state=new_user
+    #   # GET request to your +redirect_uri+ after User has allowed access
+    #   # => http://test.com/#access_token=AAAAWMgAAAIB-4ACc6qc&token_type=bearer&expires_in=43199
+    #
+    #   # GET request to your +redirect_uri+ after User has denied access
+    #   # => http://test.com/#error=access_denied
+    #
+    # @example
+    #   Rdioid::Client.authorization_url(:response_type => 'token', :state => 'new_user')
+    #   # => https://www.rdio.com/oauth2/authorize/?response_type=token&client_id=a1b2c3&redirect_uri=http%3A%2F%test.com%2F&state=new_user
+    #
+    #   # GET request to your +redirect_uri+ after User has allowed access
+    #   # => http://test.com/#access_token=AAAAWMgAAAIB-4ACc6qc&token_type=bearer&state=new_user&expires_in=43199
+    #
+    #   # GET request to your +redirect_uri+ after User has denied access
+    #   # => http://test.com/#state=new_user&error=access_denied
     #
     def self.authorization_url(options = {})
       query = {
@@ -55,21 +85,21 @@ module Rdioid
     #
     # @example
     #   rdioid_client = Rdioid::Client.new
-    #   token = 'AAWEAAVWMgAAAABVsG3t'
+    #   access_token = 'AAWEAAVWMgAAAABVsG3t'
     #
-    #   rdioid_client.api_request(token)
+    #   rdioid_client.api_request(access_token)
     #   # => { "status" => "error", "message" => "You must pass a method name as an HTTP POST parameter named \"method\".", "code" => 400 }
     #
-    #   rdioid_client.api_request(token, :method => 'getTopCharts', :type => 'Artist', :count => 3, :extras => '-*,name')
+    #   rdioid_client.api_request(access_token, :method => 'getTopCharts', :type => 'Artist', :count => 3, :extras => '-*,name')
     #   # => { "status" => "ok", "result" => [{ "name" => "Future" }, { "name" => "Tame Impala" }, { "name" => "Ratatat" }] }
     #
-    #   rdioid_client.api_request(token, :method => 'searchSuggestions', :query => 'Mac', :types => 'Artist', :count => 3, :extras => '-*,name')
+    #   rdioid_client.api_request(access_token, :method => 'searchSuggestions', :query => 'Mac', :types => 'Artist', :count => 3, :extras => '-*,name')
     #   # => { "status" => "ok", "result" => [{ "name" => "Macklemore & Ryan Lewis" }, { "name" => "Mac Miller" }, { "name" => "Macy Gray" }] }
     #
-    #   rdioid_client.api_request(token, :method => 'getAlbumsInCollection', :extras => '-*,name')
+    #   rdioid_client.api_request(access_token, :method => 'getAlbumsInCollection', :extras => '-*,name')
     #   # => { "status" => "ok", "result" => [{ "name" => "Adore" }, { "name" => "Against The Grain (Reissue)" }, { "name" => "Agony & Irony" }] }
     #
-    #   rdioid_client.api_request(token, :method => 'getFavorites')
+    #   rdioid_client.api_request(access_token, :method => 'getFavorites')
     #   # => { "error_description" => "Invalid or expired access token", "error" => "invalid_token" }
     #
     def api_request(access_token, body = {})
@@ -113,13 +143,13 @@ module Rdioid
     #
     # @example
     #   rdioid_client = Rdioid::Client.new
-    #   code = '2dmanFxdWxlanoyYWJ3bTp5V86G'
+    #   code = 'ImSLMoN02mqBkO'
     #
     #   rdioid_client.request_token_with_authorization_code(code)
     #   # => { "access_token" => "manFxdW1-WuBd", "token_type" = >"bearer", "expires_in" => 43200, "refresh_token" = >"06l79UCO90G", "scope" => "" }
     #
-    #   rdioid_client.request_token_with_authorization_code('NmN3p2Y2dmanFx')
-    #   # => { "error_description" => "unknown authorization code NmN3p2Y2dmanFx", "error" => "invalid_grant" }
+    #   rdioid_client.request_token_with_authorization_code(code)
+    #   # => { "error_description" => "unknown authorization code ImSLMoN02mqBkO", "error" => "invalid_grant" }
     #
     def request_token_with_authorization_code(code, options = {})
       body = {
@@ -164,15 +194,15 @@ module Rdioid
     #
     # @example
     #   rdioid_client = Rdioid::Client.new
-    #   code = 'BX55E2'
+    #   device_code = 'BX55E2'
     #
-    #   rdioid_client.request_token_with_device_code(code)
+    #   rdioid_client.request_token_with_device_code(device_code)
     #   # => { "error_description" => "user has not approved this code yet", "error" => "pending_authorization" }
     #
-    #   rdioid_client.request_token_with_device_code(code)
+    #   rdioid_client.request_token_with_device_code(device_code)
     #   # => { "access_token" => "AAAA3lB6RbI3l8", "token_type" => "bearer", "expires_in" => 43200, "refresh_token" => "AAAFxdWxlbX1z", "scope" => "" }
     #
-    #   rdioid_client.request_token_with_device_code(code)
+    #   rdioid_client.request_token_with_device_code(device_code)
     #   # => { "error_description" => "no entry found for given device_code", "error" => "invalid_request" }
     #
     def request_token_with_device_code(device_code, options = {})
