@@ -53,11 +53,10 @@ module Rdioid
     #   # => http://test.com/#state=new_user&error=access_denied
     #
     def self.authorization_url(options = {})
-      query = {
-        :response_type => 'code',
-        :client_id => Rdioid.config.client_id,
-        :redirect_uri => Rdioid.config.redirect_uri
-      }.merge(options)
+      query = { :response_type => 'code' }.merge(options)
+
+      query[:client_id] = Rdioid.config.client_id
+      query[:redirect_uri] = Rdioid.config.redirect_uri
 
       authorization_query = HTTP::Message.escape_query(query)
 
@@ -113,8 +112,8 @@ module Rdioid
     ##
     # Requests an OAuth +device_code+ for the <b>Device Code Grant</b>.
     #
-    # @param options [Hash] additional request values
-    # @option options [String] :scope the desired scope you wish to have access to
+    # @param body [Hash] additional request values
+    # @option body [String] :scope the desired scope you wish to have access to
     #
     # @return [Hash] response from the Web Service API
     #
@@ -124,10 +123,8 @@ module Rdioid
     #   rdioid_client.request_device_code
     #   # => { "expires_in_s" => 1800, "device_code" => "2479RA", "interval_s" => 5, "verification_url" => "rdio.com/device" }
     #
-    def request_device_code(options = {})
-      body = {
-        :client_id => Rdioid.config.client_id,
-      }.merge(options)
+    def request_device_code(body = {})
+      body[:client_id] = Rdioid.config.client_id
 
       request(Rdioid::OAUTH_DEVICE_CODE_ENDPOINT, :body => body)
     end
@@ -136,8 +133,8 @@ module Rdioid
     # Requests an OAuth +access_token+ using the <b>Authorization Code Grant</b>.
     #
     # @param code [String] OAuth code received from the +.authorization_url+ redirect
-    # @param options [Hash] additional request values
-    # @option options [String] :scope the desired scope you wish to have access to
+    # @param body [Hash] additional request values
+    # @option body [String] :scope the desired scope you wish to have access to
     #
     # @return [Hash] response from the Web Service API
     #
@@ -151,12 +148,10 @@ module Rdioid
     #   rdioid_client.request_token_with_authorization_code(code)
     #   # => { "error_description" => "unknown authorization code ImSLMoN02mqBkO", "error" => "invalid_grant" }
     #
-    def request_token_with_authorization_code(code, options = {})
-      body = {
-        :grant_type => 'authorization_code',
-        :code => code,
-        :redirect_uri => Rdioid.config.redirect_uri
-      }.merge(options)
+    def request_token_with_authorization_code(code, body = {})
+      body[:grant_type] = 'authorization_code'
+      body[:code] = code
+      body[:redirect_uri] = Rdioid.config.redirect_uri
 
       request(Rdioid::OAUTH_TOKEN_ENDPOINT, :body => body)
     end
@@ -164,8 +159,8 @@ module Rdioid
     ##
     # Requests an OAuth +access_token+ using the <b>Client Credentials</b>.
     #
-    # @param options [Hash] additional request values
-    # @option options [String] :scope the desired scope you wish to have access to
+    # @param body [Hash] additional request values
+    # @option body [String] :scope the desired scope you wish to have access to
     #
     # @return [Hash] response from the Web Service API
     #
@@ -175,10 +170,8 @@ module Rdioid
     #   rdioid_client.request_token_with_client_credentials
     #   # => { "access_token" => "AAAdmanFxdWxlayip", "token_type" => "bearer", "expires_in" => 43200, "scope" => "" }
     #
-    def request_token_with_client_credentials(options = {})
-      body = {
-        :grant_type => 'client_credentials'
-      }.merge(options)
+    def request_token_with_client_credentials(body = {})
+      body[:grant_type] = 'client_credentials'
 
       request(Rdioid::OAUTH_TOKEN_ENDPOINT, :body => body)
     end
@@ -187,8 +180,8 @@ module Rdioid
     # Requests an OAuth +access_token+ using the <b>Device Code Grant</b>.
     #
     # @param device_code [String] +device_code+ received from calling +#request_device_code+
-    # @param options [Hash] additional request values
-    # @option options [String] :scope the desired scope you wish to have access to
+    # @param body [Hash] additional request values
+    # @option body [String] :scope the desired scope you wish to have access to
     #
     # @return [Hash] response from the Web Service API
     #
@@ -205,11 +198,9 @@ module Rdioid
     #   rdioid_client.request_token_with_device_code(device_code)
     #   # => { "error_description" => "no entry found for given device_code", "error" => "invalid_request" }
     #
-    def request_token_with_device_code(device_code, options = {})
-      body = {
-        :grant_type => 'device_code',
-        :device_code => device_code
-      }.merge(options)
+    def request_token_with_device_code(device_code, body = {})
+      body[:grant_type] = 'device_code'
+      body[:device_code] = device_code
 
       request(Rdioid::OAUTH_TOKEN_ENDPOINT, :body => body)
     end
@@ -219,8 +210,8 @@ module Rdioid
     #
     # @param username [String] email address for the User
     # @param password [String] password for the User
-    # @param options [Hash] additional request values
-    # @option options [String] :scope the desired scope you wish to have access to
+    # @param body [Hash] additional request values
+    # @option body [String] :scope the desired scope you wish to have access to
     #
     # @return [Hash] response from the Web Service API
     #
@@ -235,12 +226,10 @@ module Rdioid
     #   rdioid_client.request_token_with_password(username, password)
     #   # => { "error_description" => "This client is not authorized to use the password grant", "error" => "unauthorized_client" }
     #
-    def request_token_with_password(username, password, options = {})
-      body = {
-          :grant_type => 'password',
-          :username => username,
-          :password => password
-      }.merge(options)
+    def request_token_with_password(username, password, body = {})
+      body[:grant_type] = 'password'
+      body[:username] = username
+      body[:password] = password
 
       request(Rdioid::OAUTH_TOKEN_ENDPOINT, :body => body)
     end
@@ -249,8 +238,8 @@ module Rdioid
     # Requests an OAuth +access_token+ using the <b>Refresh Token</b>.
     #
     # @param refresh_token [String] refresh token previously issued during an +access_token+ request
-    # @param options [Hash] additional request values
-    # @option options [String] :scope the desired scope you wish to have access to
+    # @param body [Hash] additional request values
+    # @option body [String] :scope the desired scope you wish to have access to
     #
     # @return [Hash] response from the Web Service API
     #
@@ -264,11 +253,9 @@ module Rdioid
     #    rdioid_client.request_token_with_refresh_token(refresh_token)
     #    # => { "error_description" =>  "invalid refresh token", "error" => "invalid_grant" }
     #
-    def request_token_with_refresh_token(refresh_token, options = {})
-      body = {
-        :grant_type => 'refresh_token',
-        :refresh_token => refresh_token
-      }.merge(options)
+    def request_token_with_refresh_token(refresh_token, body = {})
+      body[:grant_type] = 'refresh_token'
+      body[:refresh_token] = refresh_token
 
       request(Rdioid::OAUTH_TOKEN_ENDPOINT, :body => body)
     end
