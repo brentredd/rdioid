@@ -7,18 +7,46 @@ describe Rdioid::Client do
   before { set_config_values }
 
   describe '.authorization_url' do
-    it 'escapes the query string' do
-      expect(HTTP::Message).to receive(:escape_query).with(anything)
+    it 'includes the response type when escaping the query string' do
+      expect(HTTP::Message).to receive(:escape_query).with(hash_including(:response_type => 'code'))
 
       Rdioid::Client.authorization_url
     end
 
-    it 'returns a URL' do
-      expect(Rdioid::Client.authorization_url).to eq 'https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=test_id&redirect_uri=http%3A%2F%2Ftest_redirect_uri%2F'
+    it 'overrides the response type with "options"' do
+      url_options = { :response_type => 'token' }
+
+      expect(HTTP::Message).to receive(:escape_query).with(hash_including(url_options))
+
+      Rdioid::Client.authorization_url(url_options)
     end
 
-    it 'adds options to URL' do
-      expect(Rdioid::Client.authorization_url(:state => 'new_user')).to eq 'https://www.rdio.com/oauth2/authorize/?response_type=code&client_id=test_id&redirect_uri=http%3A%2F%2Ftest_redirect_uri%2F&state=new_user'
+    it 'adds additional "options" to the query string' do
+      url_options = { :state => 'new_user' }
+
+      expect(HTTP::Message).to receive(:escape_query).with(hash_including(url_options))
+
+      Rdioid::Client.authorization_url(url_options)
+    end
+
+    it 'includes the client id when escaping the query string' do
+      expect(HTTP::Message).to receive(:escape_query).with(hash_including(:client_id => Rdioid.config.client_id))
+
+      Rdioid::Client.authorization_url
+    end
+
+    it 'includes the redirect uri when escaping the query string' do
+      expect(HTTP::Message).to receive(:escape_query).with(hash_including(:redirect_uri => Rdioid.config.redirect_uri))
+
+      Rdioid::Client.authorization_url
+    end
+
+    it 'returns an AUTHORIZATION_URL' do
+      expect(Rdioid::Client.authorization_url).to start_with(Rdioid::AUTHORIZATION_URL)
+    end
+
+    it 'returns a query string appended to the url' do
+      expect(Rdioid::Client.authorization_url).to match(/\?\w+/)
     end
   end
 
@@ -79,7 +107,7 @@ describe Rdioid::Client do
       rdioid_client.request_device_code
     end
 
-    it 'merges "options" arg into the body' do
+    it 'adds additional "options" to the body' do
       expect(rdioid_client).to receive(:request).with(
         anything,
         :body => hash_including(options)
@@ -125,7 +153,7 @@ describe Rdioid::Client do
       rdioid_client.request_token_with_authorization_code(code)
     end
 
-    it 'merges "options" arg into the body' do
+    it 'adds additional "options" to the body' do
       expect(rdioid_client).to receive(:request).with(
         anything,
         :body => hash_including(options)
@@ -151,7 +179,7 @@ describe Rdioid::Client do
       rdioid_client.request_token_with_client_credentials
     end
 
-    it 'merges "options" arg into the body' do
+    it 'adds additional "options" to the body' do
       expect(rdioid_client).to receive(:request).with(
         anything,
         :body => hash_including(options)
@@ -188,7 +216,7 @@ describe Rdioid::Client do
       rdioid_client.request_token_with_device_code(device_code)
     end
 
-    it 'merges "options" arg into the body' do
+    it 'adds additional "options" to the body' do
       expect(rdioid_client).to receive(:request).with(
         anything,
         :body => hash_including(options)
@@ -235,7 +263,7 @@ describe Rdioid::Client do
       rdioid_client.request_token_with_password(username, password)
     end
 
-    it 'merges "options" arg into the body' do
+    it 'adds additional "options" to the body' do
       expect(rdioid_client).to receive(:request).with(
         anything,
         :body => hash_including(options)
@@ -272,7 +300,7 @@ describe Rdioid::Client do
       rdioid_client.request_token_with_refresh_token(refresh_token)
     end
 
-    it 'merges "options" arg into the body' do
+    it 'adds additional "options" to the body' do
       expect(rdioid_client).to receive(:request).with(
         anything,
         :body => hash_including(options)
