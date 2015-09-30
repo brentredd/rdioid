@@ -1,5 +1,6 @@
 # Rdioid
 
+[![Gem Version](https://badge.fury.io/rb/rdioid.svg)](http://badge.fury.io/rb/rdioid)
 [![Build Status](https://travis-ci.org/reddshack/rdioid.svg)](https://travis-ci.org/reddshack/rdioid)
 
 A simple Ruby Gem wrapper for the Rdio Web Service API with OAuth 2.0. Handles OAuth requests and API requests.
